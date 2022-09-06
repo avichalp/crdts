@@ -65,4 +65,39 @@ func main() {
 	fmt.Println("ppqqset contains obj1", ppqqset.Contains(obj1))
 	fmt.Println("ppqqset contains obj2", ppqqset.Contains(obj2))
 
+	AddLWWSet, _ := crdts.NewLLWSet(crdts.BiasAdd)
+	AddLWWSet.Remove(obj1)
+	AddLWWSet.Add(obj1)
+	fmt.Println("Add LWW set contains obj1 after removal", AddLWWSet.Contains(obj1))
+
+	RmLWWSet, _ := crdts.NewLLWSet(crdts.BiasRemove)
+	RmLWWSet.Remove(obj1)
+	RmLWWSet.Remove(obj1)
+	fmt.Println("Remove LWW set contains obj1 after removal", RmLWWSet.Contains(obj1))
+
+	AddLWWSet1, _ := crdts.NewLLWSet(crdts.BiasAdd)
+	AddLWWSet2, _ := crdts.NewLLWSet(crdts.BiasAdd)
+	AddLWWSet1.Add(obj1)
+	AddLWWSet2.Add(obj2)
+	AddLWWSet1.Merge(AddLWWSet2)
+	fmt.Println("Merge obj2 from set 2 into 1?", AddLWWSet1.Contains(obj2))
+
+	// ORSet
+	orset := crdts.NewORSet()
+	// inserting same object
+	orset.Add(obj1)
+	orset.Add(obj1)
+
+	// removing one
+	orset.Remove(obj1)
+
+	fmt.Println("must not contain obj1", orset.Contains(obj1))
+
+	orset2 := crdts.NewORSet()
+	orset2.Add(obj1)
+	orset2.Remove(obj1)
+	orset2.Add(obj1)
+
+	fmt.Println("must contain obj1", orset2.Contains(obj1))
+
 }
