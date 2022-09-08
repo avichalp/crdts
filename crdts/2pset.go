@@ -25,15 +25,14 @@ func (t *TwoPhaseSet) Contains(elem interface{}) bool {
 }
 
 // Compare method for TPSet
-func (t *TwoPhaseSet) Subset(u *TwoPhaseSet) bool {
+func (t *TwoPhaseSet) Compare(u *TwoPhaseSet) bool {
 	return t.addSet.Subset(u.addSet) && t.rmSet.Subset(u.rmSet)
 }
 
 // Merge method for TPSet
-func (t *TwoPhaseSet) Union(u *TwoPhaseSet) *TwoPhaseSet {
+func (t *TwoPhaseSet) Merge(u *TwoPhaseSet) *TwoPhaseSet {
 	s := NewTwoPhaseSet()
 	s.addSet = t.addSet.Union(u.addSet)
 	s.rmSet = t.rmSet.Union(u.rmSet)
 	return s
 }
-

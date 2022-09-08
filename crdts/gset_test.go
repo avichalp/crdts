@@ -1,7 +1,6 @@
 package crdts
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -72,7 +71,6 @@ func TestGSetCompare(t *testing.T) {
 
 }
 
-// union
 func TestGSetMerge(t *testing.T) {
 	for _, tt := range []struct {
 		addOne []interface{}
@@ -106,16 +104,10 @@ func TestGSetMerge(t *testing.T) {
 
 		gset := gsetOne.Merge(gsetTwo)
 
-		fmt.Println("gsetOne", gsetOne.set)
-		fmt.Println("gsetTwo", gsetTwo.set)
-		fmt.Println("gset", gset.set)
-
 		for e := range gsetOne.set {
-			fmt.Println(e)
 			assert.True(t, gset.Contains(e))
 		}
 		for e := range gsetTwo.set {
-			fmt.Println(e)
 			assert.True(t, gset.Contains(e))
 		}
 

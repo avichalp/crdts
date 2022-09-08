@@ -60,7 +60,7 @@ func main() {
 	qqset := crdts.NewTwoPhaseSet()
 	qqset.Add(obj2)
 	qqset.Remove(obj2)
-	ppqqset := ppset.Union(qqset)
+	ppqqset := ppset.Merge(qqset)
 
 	fmt.Println("ppqqset contains obj1", ppqqset.Contains(obj1))
 	fmt.Println("ppqqset contains obj2", ppqqset.Contains(obj2))

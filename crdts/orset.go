@@ -1,8 +1,6 @@
 package crdts
 
 import (
-	"fmt"
-
 	"github.com/google/uuid"
 )
 
@@ -49,7 +47,6 @@ func (o *ORSet) Remove(value interface{}) {
 func (o *ORSet) Contains(value interface{}) bool {
 	addMap, ok := o.addMap[value]
 	if !ok {
-		fmt.Println(addMap)
 		return false
 	}
 
@@ -61,7 +58,6 @@ func (o *ORSet) Contains(value interface{}) bool {
 	// for all occurance in add set
 	// if anyone of them is not present
 	// in the remove set
-	// fmt.Println(addMap)
 	for uid := range addMap {
 		if _, ok := rmMap[uid]; !ok {
 			return true
