@@ -48,10 +48,10 @@ func main() {
 	gset2.Add(obj2)
 	fmt.Println(gset2)
 
-	fmt.Println("gset2 is subset of gset1", gset2.Subset(gset1))
+	// fmt.Println("gset2 is subset of gset1", gset2.set.Subset(gset1.set))
 
-	gset3 := gset1.Union(gset2)
-	fmt.Println(gset3)
+	// gset3 := gset1.Union(gset2)
+	// fmt.Println(gset3)
 
 	fmt.Println("TWO PHASE SET")
 	ppset := crdts.NewTwoPhaseSet()

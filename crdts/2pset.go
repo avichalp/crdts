@@ -1,7 +1,5 @@
 package crdts
 
-import "encoding/json"
-
 type TwoPhaseSet struct {
 	addSet *GSet
 	rmSet  *GSet
@@ -39,16 +37,3 @@ func (t *TwoPhaseSet) Union(u *TwoPhaseSet) *TwoPhaseSet {
 	return s
 }
 
-type tpsetJSON struct {
-	T string        `json:"type"`
-	A []interface{} `json:"a"`
-	R []interface{} `json:"r"`
-}
-
-func (t *TwoPhaseSet) MarshalJSON() ([]byte, error) {
-	return json.Marshal(&tpsetJSON{
-		T: "2p-set",
-		A: t.addSet.Elems(),
-		R: t.rmSet.Elems(),
-	})
-}
