@@ -1,6 +1,9 @@
 package vectorclocks
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 type VectorClock map[string]uint64
 
@@ -84,4 +87,12 @@ func (v VectorClock) Relation(w VectorClock) Relation {
 	} else {
 		return Concurrent
 	}
+}
+
+func (v VectorClock) String() string {
+	keyvals := make([]string, 0)
+	for k, v := range v {
+		keyvals = append(keyvals, fmt.Sprintf("%s:%d", k, v))
+	}
+	return strings.Join(keyvals, ",")
 }

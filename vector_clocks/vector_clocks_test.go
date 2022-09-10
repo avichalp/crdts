@@ -1,6 +1,7 @@
 package vectorclocks
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -48,7 +49,9 @@ func TestDescendant(t *testing.T) {
 		{VectorClock{"a": 1, "b": 1, "c": 1}, true},
 	} {
 		vc := VectorClock{"a": 1, "b": 1}
-		assert.Equal(t, tt.descendant, tt.vc.Descendant(vc))
+		t.Run(vc.String(), func(t *testing.T) {
+			assert.Equal(t, tt.descendant, tt.vc.Descendant(vc))
+		})
 	}
 }
 
@@ -63,6 +66,63 @@ func TestRelation(t *testing.T) {
 		{VectorClock{"a": 1, "c": 1}, Concurrent},
 	} {
 		vc := VectorClock{"a": 1, "b": 1}
-		assert.Equal(t, tt.relation, vc.Relation(tt.vc))
+		t.Run(tt.vc.String(), func(t *testing.T) {
+			assert.Equal(t, tt.relation, vc.Relation(tt.vc))
+		})
 	}
+}
+
+func BenchmarkMerge(b *testing.B) {
+	for _, bb := range []struct {
+		vc1 VectorClock
+		vc2 VectorClock
+	}{
+		{VectorClock{"a": 1, "b": 1}, VectorClock{"a": 1, "b": 1}},
+		{VectorClock{"a": 1, "b": 1, "c": 1}, VectorClock{"a": 1, "b": 1}},
+		{VectorClock{"b": 1}, VectorClock{"a": 1, "b": 1}},
+		{VectorClock{"a": 1, "c": 1}, VectorClock{"a": 1, "b": 1}},
+	} {
+		b.Run(fmt.Sprintf("{%s}+{%s}", bb.vc1.String(), bb.vc2.String()), func(b *testing.B) {
+			for n := 0; n < b.N; n++ {
+				bb.vc1.Merge(bb.vc2)
+			}
+		})
+	}
+}
+
+func BenchmarkEqual(b *testing.B) {
+	for _, bb := range []struct {
+		vc1 VectorClock
+		vc2 VectorClock
+	}{
+		{VectorClock{"a": 1, "b": 1}, VectorClock{"a": 1, "b": 1}},
+		{VectorClock{"a": 1, "b": 1, "c": 1}, VectorClock{"a": 1, "b": 1}},
+		{VectorClock{"b": 1}, VectorClock{"a": 1, "b": 1}},
+		{VectorClock{"a": 1, "c": 1}, VectorClock{"a": 1, "b": 1}},
+	} {
+		b.Run(fmt.Sprintf("{%s}+{%s}", bb.vc1.String(), bb.vc2.String()), func(b *testing.B) {
+			for n := 0; n < b.N; n++ {
+				bb.vc1.Equal(bb.vc2)
+			}
+		})
+	}
+}
+
+func BenchmarkDecendant(b *testing.B) {
+	for _, bb := range []struct {
+		vc1 VectorClock
+		vc2 VectorClock
+	}{
+		{VectorClock{"a": 1, "b": 1}, VectorClock{"a": 1, "b": 1}},
+		{VectorClock{"a": 1, "b": 1, "c": 1}, VectorClock{"a": 1, "b": 1}},
+		{VectorClock{"b": 1}, VectorClock{"a": 1, "b": 1}},
+		{VectorClock{"a": 1, "c": 1}, VectorClock{"a": 1, "b": 1}},
+	} {
+		b.Run(fmt.Sprintf("{%s}+{%s}", bb.vc1.String(), bb.vc2.String()), func(b *testing.B) {
+			for n := 0; n < b.N; n++ {
+				bb.vc1.Descendant(bb.vc2)
+			}
+		})
+	}
+
 }
