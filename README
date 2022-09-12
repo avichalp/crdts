@@ -1,2 +1,0 @@
-### run benchmarks for vector clocks
-go test ./... -bench=.
