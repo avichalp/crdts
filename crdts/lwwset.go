@@ -94,4 +94,4 @@ func (s *LWWSet) Merge(r *LWWSet) {
 	}
 }
 
-// TODO: LogicalLWW: last writer wins with logical/lamport timestamps
+// TODO: LogicalLWW: last writer wins with vector clocks as timestamp
