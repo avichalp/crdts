@@ -139,10 +139,10 @@ func TestLWWSetMerge(t *testing.T) {
 	var addOp, rmOp string = "add", "remove"
 
 	for _, tt := range []struct {
-		mapOne  map[string]addRm
-		mapTwo  map[string]addRm
-		valid   map[string]struct{}
-		invalid map[string]struct{}
+		mapOne      map[string]addRm
+		mapTwo      map[string]addRm
+		contains    map[string]struct{}
+		notContains map[string]struct{}
 	}{
 		{
 			map[string]addRm{
@@ -202,11 +202,11 @@ func TestLWWSetMerge(t *testing.T) {
 
 		lww1.Merge(lww2)
 
-		for obj := range tt.valid {
+		for obj := range tt.contains {
 			assert.True(t, lww1.Contains(obj))
 		}
 
-		for obj := range tt.invalid {
+		for obj := range tt.notContains {
 			assert.False(t, lww1.Contains(obj))
 		}
 
