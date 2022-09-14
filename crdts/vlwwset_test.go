@@ -3,46 +3,49 @@ package crdts
 import (
 	"fmt"
 	"testing"
-	"time"
 
-	"github.com/benbjohnson/clock"
+	// "time"
+
+	// "github.com/benbjohnson/clock"
 	"github.com/stretchr/testify/assert"
 )
 
-func TestLWWSetAddContains(t *testing.T) {
-	lww, err := NewLLWSet(BiasAdd)
-	if err != nil {
-		t.Fatalf("cannot create lww set")
-	}
+func TestVLWWSetAddContains(t *testing.T) {
+	lww, _ := NewVLLWSet(BiasAdd)
 
 	testStr := "foo"
 	assert.False(t, lww.Contains(testStr))
 
 	lww.Add(testStr)
+	fmt.Println(lww.addMap)
+
 	assert.True(t, lww.Contains(testStr))
 
 }
 
-func TestLWWSetAddRemoveContains(t *testing.T) {
-	lww, err := NewLLWSet(BiasAdd)
-	if err != nil {
-		t.Fatal("cannot create new lww set")
-	}
+func TestVLWWSetAddRemoveContains(t *testing.T) {
+	lww, _ := NewVLLWSet(BiasAdd)
 
 	testStr := "foo"
 	lww.Add(testStr)
 	lww.Remove(testStr)
+
+	fmt.Println(lww.addMap)
+	fmt.Println(lww.rmMap)
+
 	assert.False(t, lww.Contains(testStr))
 }
 
-func TestInvalidBias(t *testing.T) {
+/*
+
+func TestVInvalidBias(t *testing.T) {
 	var InvalidBias BiasType = "invalid bias"
 	_, err := NewLLWSet(InvalidBias)
 	assert.EqualError(t, err, "given bias is not valid")
 
 }
 
-func TestRemoveBias(t *testing.T) {
+func TestVRemoveBias(t *testing.T) {
 	lww, _ := NewLLWSet(BiasRemove)
 
 	mock := clock.NewMock()
@@ -66,7 +69,7 @@ func TestRemoveBias(t *testing.T) {
 
 }
 
-func TestLWWSetAddRemoveConflict(t *testing.T) {
+func TestVLWWSetAddRemoveConflict(t *testing.T) {
 	for _, tt := range []struct {
 		bias       BiasType
 		testObject string
@@ -129,7 +132,7 @@ func TestLWWSetAddRemoveConflict(t *testing.T) {
 	}
 }
 
-func TestLWWSetMerge(t *testing.T) {
+func TestVLWWSetMerge(t *testing.T) {
 	type addRm struct {
 		op string
 		d  time.Duration
@@ -210,4 +213,4 @@ func TestLWWSetMerge(t *testing.T) {
 		}
 
 	}
-}
+} */
