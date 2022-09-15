@@ -1,11 +1,10 @@
 package crdts
 
 import (
+	"fmt"
 	"testing"
 
-	// "time"
-
-	// "github.com/benbjohnson/clock"
+	vectorclocks "github.com/avichalp/crdts/vector_clocks"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -38,94 +37,104 @@ func TestVLWWInvalidBias(t *testing.T) {
 
 }
 
-/*
 func TestVRemoveBias(t *testing.T) {
-	lww, _ := NewLLWSet(BiasRemove)
+	lww, _ := NewVLLWSet(BiasRemove)
+	e1 := "foo"
+	e2 := "bar"
 
-	mock := clock.NewMock()
-	lww.clock = mock
+	lww.Add(e1)
+	lww.Remove(e1)
+	assert.False(t, lww.Contains(e1))
 
-	e := "foo"
-
-	// Remove before Add. Since it is a set with
-	// remove bias the any add after remove will not
-	// 'add' element to the lww set
-	lww.Add(e)
-	// rollback the clock by 10 mins
-	mock.Add(-10 * time.Minute)
-
-	lww.Remove(e)
-
-	fmt.Println(lww.addMap)
-	fmt.Println(lww.rmMap)
-
-	assert.True(t, lww.Contains(e))
-
+	lww.Remove(e2)
+	lww.Add(e2)
+	assert.False(t, lww.Contains(e2))
 }
 
 func TestVLWWSetAddRemoveConflict(t *testing.T) {
 	for _, tt := range []struct {
 		bias       BiasType
 		testObject string
-		elapsed    time.Duration
+		relation   vectorclocks.Relation
 		contains   bool
 	}{
 		{
 			BiasAdd,
 			"foo",
-			0,    // concurrent Add and remove
-			true, // when add time is **not** before rm time
+			vectorclocks.Concurrent, // concurrent Add and remove
+			true,                    // when add time is **not** before rm time
 		},
 		{
 			BiasRemove,
 			"bar",
-			0,
+			vectorclocks.Concurrent,
 			false,
 		},
 		{
 			BiasAdd,
 			"baz",
-			1 * time.Minute,
+			vectorclocks.Ancestor, // add before remove
 			false,
 		},
 		{
 			BiasAdd,
 			"qux",
-			-1 * time.Minute,
+			vectorclocks.Descendant, // remove before add
 			true,
 		},
 		{
 			BiasRemove,
 			"foo",
-			1 * time.Minute,
+			vectorclocks.Ancestor, // add before remove
 			false,
 		},
 		{
 			BiasRemove,
 			"bar",
-			-1 * time.Minute,
+			vectorclocks.Descendant, // remove before add
 			true,
 		},
 	} {
-		t.Run(fmt.Sprintf("bias:%s,elapsed:%d", tt.bias, tt.elapsed), func(t *testing.T) {
-			lww, _ := NewLLWSet(tt.bias)
+		t.Run(fmt.Sprintf("bias:%s,relation:%d", tt.bias, tt.relation), func(t *testing.T) {
+			lww, _ := NewVLLWSet(tt.bias)
 
-			// replace clock with a mock clock
-			mock := clock.NewMock()
-			lww.clock = mock
+			switch tt.relation {
+			case vectorclocks.Concurrent:
+				// Add object
+				lww.Add(tt.testObject)
+				// remove object
+				lww.Remove(tt.testObject)
+				// patch the vc
+				if _, ok := lww.rmMap[tt.testObject]; ok {
+					addVC := lww.addMap[tt.testObject]
+					lww.rmMap[tt.testObject] = addVC
+				}
+			case vectorclocks.Descendant:
+				// remove object
+				lww.Remove(tt.testObject)
+				// Add object
+				lww.Add(tt.testObject)
+				// patch the add vc to make remove before add
+				if _, ok := lww.addMap[tt.testObject]; ok {
+					rmVC := lww.rmMap[tt.testObject]
+					addVC := rmVC.Copy()
+					addVC.Tick(lww.id)
+					lww.addMap[tt.testObject] = addVC
+				}
+			case vectorclocks.Ancestor:
+				// Add object
+				lww.Add(tt.testObject)
+				// remove object
+				lww.Remove(tt.testObject)
+			}
 
-			// Add object
-			lww.Add(tt.testObject)
-			// move time forward or backward
-			mock.Add(tt.elapsed)
-			// remove object
-			lww.Remove(tt.testObject)
 			assert.Equal(t, tt.contains, lww.Contains(tt.testObject))
 
 		})
 	}
 }
 
+/*
 func TestVLWWSetMerge(t *testing.T) {
 	type addRm struct {
 		op string

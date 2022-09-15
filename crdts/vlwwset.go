@@ -96,14 +96,20 @@ func (s *VLWWSet) Contains(value interface{}) bool {
 		// if it is equal or concurrent or comes before (ancestor)
 		// then the given value is member of the set
 		//
-		// true: rmVC is ancestor, or concurrnent or equal
-		// false: rmVC is a decendent of addVC
+		// rmVC  -> addVC: true
+		// addVC -> rmVC : false
+		// addVC == rmVC: true
+		// addVC || rmVC: true (cannot compare, add bias)
 		return !rmVC.Descendant(addVC)
 	case BiasRemove:
-		// in Remove Bias sets, membership is only true
-		// when rmVC comes before addVC i.e. addVC is ancestor of rmVC
-		return rmVC.Relation(addVC) == vectorclocks.Ancestor
-		//return rmVC.Before(addVC)
+		// in LWW Remove Bias set an element cannot be added
+		// if it is removed at an earlier point in time
+
+		// rmVC  -> addVC: true
+		// addVC -> rmVC : false
+		// addVC == rmVC: false
+		// addVC || rmVC: false (cannot compare) remove wins
+		return addVC.Descendant(rmVC)
 	}
 
 	return false
