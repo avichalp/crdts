@@ -1,7 +1,6 @@
 package crdts
 
 import (
-	"fmt"
 	"testing"
 
 	// "time"
@@ -17,8 +16,6 @@ func TestVLWWSetAddContains(t *testing.T) {
 	assert.False(t, lww.Contains(testStr))
 
 	lww.Add(testStr)
-	fmt.Println(lww.addMap)
-
 	assert.True(t, lww.Contains(testStr))
 
 }
@@ -30,21 +27,18 @@ func TestVLWWSetAddRemoveContains(t *testing.T) {
 	lww.Add(testStr)
 	lww.Remove(testStr)
 
-	fmt.Println(lww.addMap)
-	fmt.Println(lww.rmMap)
-
+	// should not contain
 	assert.False(t, lww.Contains(testStr))
 }
 
-/*
-
-func TestVInvalidBias(t *testing.T) {
+func TestVLWWInvalidBias(t *testing.T) {
 	var InvalidBias BiasType = "invalid bias"
-	_, err := NewLLWSet(InvalidBias)
+	_, err := NewVLLWSet(InvalidBias)
 	assert.EqualError(t, err, "given bias is not valid")
 
 }
 
+/*
 func TestVRemoveBias(t *testing.T) {
 	lww, _ := NewLLWSet(BiasRemove)
 

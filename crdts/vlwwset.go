@@ -50,7 +50,6 @@ func (s *VLWWSet) Add(value interface{}) {
 }
 
 func (s *VLWWSet) Remove(value interface{}) {
-	// we overwrite the value since it is a LWW set
 
 	// if value is in add set, add it in the rm set
 	// with incremented vector clock
@@ -63,7 +62,7 @@ func (s *VLWWSet) Remove(value interface{}) {
 	}
 
 	// if value is in rm set already, re add in the
-	// rm set with incremented vector clock
+	// increment its vector clock
 	_, rmOK := s.rmMap[value]
 	if rmOK {
 		// tick
@@ -92,13 +91,11 @@ func (s *VLWWSet) Contains(value interface{}) bool {
 
 	switch s.bias {
 	case BiasAdd:
-		rel := addVC.Relation(rmVC)
-		fmt.Println("REL : ", rel, vectorclocks.Descendant)
 		// value is memeber of the set
-		// if rmVC is not decendant of the add vc
+		// if rmVC is not decendant of the addVC
 		// if it is equal or concurrent or comes before (ancestor)
-		// then membership is true
-
+		// then the given value is member of the set
+		//
 		// true: rmVC is ancestor, or concurrnent or equal
 		// false: rmVC is a decendent of addVC
 		return !rmVC.Descendant(addVC)
