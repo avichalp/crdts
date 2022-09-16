@@ -23,7 +23,7 @@ func NewVLLWSet(bias BiasType) (*VLWWSet, error) {
 
 	return &VLWWSet{
 		// set vector clocks process id here using v.Set()
-		id:     fmt.Sprintf("%d", rand.Int()),
+		id:     fmt.Sprintf("node_id:%d", rand.Int()),
 		addMap: make(map[interface{}]vectorclocks.VectorClock),
 		rmMap:  make(map[interface{}]vectorclocks.VectorClock),
 		bias:   bias,
@@ -100,6 +100,13 @@ func (s *VLWWSet) Contains(value interface{}) bool {
 		// addVC -> rmVC : false
 		// addVC == rmVC: true
 		// addVC || rmVC: true (cannot compare, add bias)
+
+		// TODO: 
+		// checking Descendant relation is not enough
+		// because two VCs with different node ids for same value will not
+		// come out as descendant or ancestor if their node id is different
+		// ???
+		// VC are related only if they are recorded/ticked at the same process?
 		return !rmVC.Descendant(addVC)
 	case BiasRemove:
 		// in LWW Remove Bias set an element cannot be added
@@ -117,13 +124,13 @@ func (s *VLWWSet) Contains(value interface{}) bool {
 
 func (s *VLWWSet) Merge(r *VLWWSet) {
 	for value, rvc := range r.addMap {
-		if svc, ok := s.addMap[value]; ok && svc.Relation(rvc) == vectorclocks.Ancestor {
+		if svc, ok := s.addMap[value]; ok && svc.Relation(rvc) == vectorclocks.Ancestor {			
 			s.addMap[value] = rvc
 		} else {
 			if svc.Relation(rvc) == vectorclocks.Ancestor {
 				s.addMap[value] = rvc
 			} else {
-				s.addMap[value] = svc
+				s.addMap[value] = svc.Merge(rvc)
 			}
 		}
 	}
@@ -135,7 +142,7 @@ func (s *VLWWSet) Merge(r *VLWWSet) {
 			if svc.Relation(rvc) == vectorclocks.Ancestor {
 				s.rmMap[value] = rvc
 			} else {
-				s.rmMap[value] = svc
+				s.rmMap[value] = svc.Merge(rvc)
 			}
 		}
 	}

@@ -134,86 +134,22 @@ func TestVLWWSetAddRemoveConflict(t *testing.T) {
 	}
 }
 
-/*
 func TestVLWWSetMerge(t *testing.T) {
-	type addRm struct {
-		op string
-		d  time.Duration
-	}
+	lww1, _ := NewVLLWSet(BiasAdd)
+	lww2, _ := NewVLLWSet(BiasAdd)
 
-	var addOp, rmOp string = "add", "remove"
+	lww1.Add("foo")
 
-	for _, tt := range []struct {
-		mapOne      map[string]addRm
-		mapTwo      map[string]addRm
-		contains    map[string]struct{}
-		notContains map[string]struct{}
-	}{
-		{
-			map[string]addRm{
-				"object1": {addOp, 1 * time.Minute},
-				"object2": {addOp, 2 * time.Minute},
-			},
-			map[string]addRm{
-				"object1": {rmOp, 2 * time.Minute},
-				"object2": {rmOp, 2 * time.Minute},
-			},
-			map[string]struct{}{
-				"object2": {},
-			},
-			map[string]struct{}{
-				"object1": {},
-			},
-		},
-	} {
-		mock1, mock2 := clock.NewMock(), clock.NewMock()
-		lww1, _ := NewLLWSet(BiasAdd)
-		lww1.clock = mock1
+	lww2.Remove("foo")
+	lww2.rmMap["foo"].Tick(lww2.id)
 
-		lww2, _ := NewLLWSet(BiasAdd)
-		lww2.clock = mock2
+	fmt.Println(lww1.addMap, lww1.rmMap)
+	fmt.Println(lww2.addMap, lww2.rmMap)
 
-		var totalDuration time.Duration
+	lww1.Merge(lww2)
 
-		for obj, addrm := range tt.mapOne {
-			curTime := addrm.d - totalDuration
+	fmt.Println(lww1.addMap, lww1.rmMap)
+	// fmt.Println(lww1.rmMap)
 
-			totalDuration += curTime
-			mock1.Add(curTime)
-
-			switch addrm.op {
-			case addOp:
-				lww1.Add(obj)
-			case rmOp:
-				lww1.Remove(obj)
-			}
-		}
-
-		totalDuration = 0 * time.Second
-
-		for obj, addrm := range tt.mapTwo {
-			curTime := addrm.d - totalDuration
-
-			totalDuration += curTime
-			mock2.Add(curTime)
-
-			switch addrm.op {
-			case addOp:
-				lww2.Add(obj)
-			case rmOp:
-				lww2.Remove(obj)
-			}
-		}
-
-		lww1.Merge(lww2)
-
-		for obj := range tt.contains {
-			assert.True(t, lww1.Contains(obj))
-		}
-
-		for obj := range tt.notContains {
-			assert.False(t, lww1.Contains(obj))
-		}
-
-	}
-} */
+	assert.True(t, lww1.Contains("foo"))
+}
