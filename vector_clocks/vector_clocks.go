@@ -68,6 +68,7 @@ func (v VectorClock) Equal(w VectorClock) bool {
 func (v VectorClock) Descendant(w VectorClock) bool {
 	isEqual := len(w) == len(v)
 	for pid := range w {
+		// if w[pid] == v[pid] or w[pid] is concurrent with v[pid] => false
 		if w[pid] > v[pid] {
 			return false
 		} else if isEqual && w[pid] < v[pid] {
