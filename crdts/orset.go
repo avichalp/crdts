@@ -17,14 +17,15 @@ func NewORSet() *ORSet {
 }
 
 func (o *ORSet) Add(value interface{}) {
+	uid := uuid.New().String()
 	if m, ok := o.addMap[value]; ok {
-		m[uuid.New().String()] = struct{}{}
+		m[uid] = struct{}{}
 		o.addMap[value] = m
 		return
 	}
 
 	m := make(map[string]struct{})
-	m[uuid.New().String()] = struct{}{}
+	m[uid] = struct{}{}
 	o.addMap[value] = m
 }
 
@@ -55,7 +56,7 @@ func (o *ORSet) Contains(value interface{}) bool {
 		return true
 	}
 
-	// for all occurance in add set
+	// for all occurances in add set
 	// if anyone of them is not present
 	// in the remove set
 	for uid := range addMap {
