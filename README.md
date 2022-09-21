@@ -1,7 +1,22 @@
 #### CRDTs
 Conflict-free Replicated Data Types
 
+This repo contains the implementation of some of the CRDTs as specified [here](https://hal.inria.fr/inria-00555588/document). This is an experimental repo. My goal here is to learn the properties of CRDTs, Vector Clocks, and other distributed systems concepts by implementing the primitives.
 
+--- 
+
+Current status
+
+- G counter
+- PN counter
+- G set
+- 2 Phase set
+- LWW set
+- OR set
+- Vector Clocks
+- Vector Clocks based 2 Phase set
+
+---
 
 ### Run tests 
 ```go
@@ -13,16 +28,20 @@ go test ./...
 go test ./... -bench=.
 ```
 
+---
 #### References
 
 ###### CRDTs
 - [Conflict Free Replicated Data Type](https://en.wikipedia.org/wiki/Conflict-free_replicated_data_type)
-- http://jtfmumm.com/blog/2015/11/17/crdt-primer-1-defanging-order-theory/
-- http://jtfmumm.com/blog/2015/11/24/crdt-primer-2-convergent-crdts/
+- [A Cmprehensive study of Convergent and Commutative Replicated Data Types](https://hal.inria.fr/inria-00555588/document)
+- [A CRDT Primer Part I: Defanging Order Theory](http://jtfmumm.com/blog/2015/11/17/crdt-primer-1-defanging-order-theory/)
+- [A CRDT Primer Part II: Convergent CRDTs](http://jtfmumm.com/blog/2015/11/24/crdt-primer-2-convergent-crdts/)
 - [CRDTs go brrr](https://josephg.com/blog/crdts-go-brrr/)
-- https://martin.kleppmann.com/papers/crdt-isabelle-oopsla17.pdf
-- https://hal.inria.fr/inria-00555588/document
+- [Verifying Strong Eventual Consistency in Distributed
+Systems](https://martin.kleppmann.com/papers/crdt-isabelle-oopsla17.pdf)
 - [Roshi: A CRDT System For Timestamped Events by Sound Cloud](https://developers.soundcloud.com/blog/roshi-a-crdt-system-for-timestamped-events)
+- [CRDTs: The Hard Parts](https://www.youtube.com/watch?v=x7drE24geUw)
+- [CRDTs and the Quest for Distributed Consistency by Martin Kelppmann](https://www.youtube.com/watch?v=B5NULPSiOGw)
 
 
 ##### Vector Clocks (Logical time keeping)
@@ -31,9 +50,6 @@ go test ./... -bench=.
 - [Why Logical Clocks Are Easy](https://queue.acm.org/detail.cfm?id=2917756)
 - [Keeping Time In Real Systems by Kavya Joshi](https://www.youtube.com/watch?v=BRvj8PykSc4)
 - [How to Have your Causality and Wall Clocks, Too by Jon Moore](https://www.youtube.com/watch?v=YqNGbvFHoKM)
-- https://www.youtube.com/watch?v=x7drE24geUw
-- https://www.youtube.com/watch?v=B5NULPSiOGw
-- https://www.youtube.com/watch?v=4i7KrG1Afbk&list=UU_QIfHvN9auy2CoOdSfMWDw&index=596
 - [Living Without Atomic Clocks by Cockroach Labs](https://www.cockroachlabs.com/blog/living-without-atomic-clocks/)
 
 
