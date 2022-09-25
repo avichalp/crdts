@@ -7,14 +7,14 @@ This repo contains the implementation of some of the CRDTs as specified [here](h
 
 Current status
 
-- G counter
-- PN counter
-- G set
-- 2 Phase set
-- LWW set
-- OR set
-- Vector Clocks
-- Vector Clocks based 2 Phase set
+- [G counter](https://github.com/avichalp/crdts/blob/master/crdts/gcounter.go)
+- [PN counter](https://github.com/avichalp/crdts/blob/master/crdts/pncounter.go)
+- [G set](https://github.com/avichalp/crdts/blob/master/crdts/gset.go)
+- [2 Phase set](https://github.com/avichalp/crdts/blob/master/crdts/2pset.go)
+- [LWW set](https://github.com/avichalp/crdts/blob/master/crdts/lwwset.go)
+- [OR set](https://github.com/avichalp/crdts/blob/master/crdts/orset.go)
+- [Vector Clocks](https://github.com/avichalp/crdts/tree/master/vector_clocks)
+- [Vector Clocks based 2 Phase set](https://github.com/avichalp/crdts/blob/master/crdts/v2pset.go)
 
 ---
 
