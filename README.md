@@ -52,6 +52,7 @@ Systems](https://martin.kleppmann.com/papers/crdt-isabelle-oopsla17.pdf)
 - [Cockroach Labs's Consistency Models](https://www.cockroachlabs.com/blog/consistency-model/)
 - [Dynamo Paper](https://www.allthingsdistributed.com/files/amazon-dynamo-sosp2007.pdf)
 - [Practical uses of synchronized clocks in distributed systems - Barbara Liskov](https://dl.acm.org/doi/pdf/10.1145/112600.112601)
+- [Notes collected from various papers on CRDTs and Eventual Consistency](https://github.com/pfrazee/crdt_notes)
 
 ##### Videos
 - [CRDTs: The Hard Parts](https://www.youtube.com/watch?v=x7drE24geUw)
