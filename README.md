@@ -1,7 +1,8 @@
 #### CRDTs
 Conflict-free Replicated Data Types
 
-This repo contains few implementations of CRDTs and logical clocks. It also has various resources on the problem of clock synchronization in distributed systems. My goal with this is to learn the properties of CRDTs, Vector Clocks, and other distributed systems concepts by implementing the primitives.
+This repo contains a few implementations of CRDTs and logical clocks. It also has various resources on the problem of clock synchronization in distributed systems. My goal with this is to learn the properties of CRDTs, Vector Clocks, and other distributed systems concepts by implementing the primitives.
+
 
 
 
